@@ -21,24 +21,27 @@ passport.use(new GoogleStrategy({
 function(accessToken, refreshToken, profile, cb) {
 	googleProfile = {
 		id: profile.id,
-		displayName: profile.displayName
+		displayName: profile.displayName,
+		print: function() {
+			return this.displayName;
+		}
 	};
 	cb(null, profile);
 }
 ));
 
 app.set('view engine', 'pug');
-app.set('views', + './views');
+app.set('views', './views');
 app.use(passport.initialize());
 app.use(passport.session());
 
 //app routes
 app.get('/', function(req, res){
-    res.render('./views/index.pug', {user: req.user});
+    res.render('index', {user: req.user});
 });
 
 app.get('/logged', function(req, res){
-    res.render('./views/logged.pug', {user: googleProfile});
+    res.render('logged', {user: (googleProfile.print())});
 });
 
 //Passport routes
